@@ -1,0 +1,341 @@
+<?php include 'header.phtml'; ?>
+
+<?php
+
+  $opt_html = function($event, $optName, $opt, $default = null, $class = '')
+  {
+
+    if ($default === null) $default = $opt['default'];
+
+?>
+
+    <?php if ($opt['type'] === 'string'): ?>
+      <input
+        type="text"
+        class="form-control <?php echo $class; ?>"
+        id="subscribe-opt-<?php echo $optName; ?>"
+        name="options[<?php echo $optName; ?>]"
+        placeholder="<?php echo $opt['placeholder'] ?: ''; ?>"
+        value="<?php echo htmlentities($default ?: '', ENT_COMPAT, 'utf-8'); ?>">
+    <?php elseif ($opt['type'] === 'text'): ?>
+      <textarea
+        class="form-control <?php echo $class; ?>"
+        id="subscribe-opt-<?php echo $optName; ?>"
+        name="options[<?php echo $optName; ?>]"
+        placeholder="<?php echo $opt['placeholder'] ?: ''; ?>"
+        rows="5"><?php echo htmlentities($default ?: '', ENT_COMPAT, 'utf-8'); ?></textarea>
+    <?php elseif ($opt['type'] === 'list'): ?>
+      <select
+        id="subscribe-opt-<?php echo $optName; ?>"
+        name="options[<?php echo $optName; ?>]"
+        class="form-control <?php echo $class; ?>">
+
+        <?php if ($opt['nullable']): ?>
+          <option value="">&ndash;</option>
+        <?php endif; ?>
+
+        <?php foreach ($opt['choices'] as $choice): ?>
+          <option
+            value="<?php echo htmlentities($choice, ENT_COMPAT, 'utf-8'); ?>"
+            <?php if ($default === $choice): ?>selected="selected"<?php endif; ?>><?php echo htmlentities($choice, ENT_COMPAT, 'utf-8'); ?></option>
+        <?php endforeach; ?>
+      </select>
+    <?php elseif ($opt['type'] === 'days'): ?>
+      <div class="days-selector" data-days-selector>
+        <div>
+          <?php if (!is_array($default) && $default !== true) $default = (array) $default; ?>
+          <?php foreach ($event->getDaysRange() as $d): ?>
+            <?php $ymd = date('Y-m-d', $d); ?>
+            <span
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Dispo. pour le <?php echo date('d/m/Y', $d); ?>">
+              <?php echo [null, 'L', 'M', 'M', 'J', 'V', 'S', 'D'][date('N', $d)]; ?>
+
+              <input
+                type="hidden"
+                name="options[<?php echo $optName; ?>][<?php echo $ymd; ?>]"
+                value="<?php echo (int) ($default === true || (array_key_exists($ymd, $default) && ((int) $default[$ymd]))); ?>">
+            </span>
+          <?php endforeach; ?>
+        </div>
+      </div>
+
+
+
+
+      <?php if (false): ?>
+      <select
+        id="subscribe-opt-<?php echo $optName; ?>"
+        name="options[<?php echo $optName; ?>]"
+        class="form-control <?php echo $class; ?>">
+
+        <?php if ($opt['nullable']): ?>
+          <option value="">&ndash;</option>
+        <?php endif; ?>
+
+        <?php foreach ($opt['choices'] as $choice): ?>
+          <option
+            value="<?php echo htmlentities($choice, ENT_COMPAT, 'utf-8'); ?>"
+            <?php if ($default === $choice): ?>selected="selected"<?php endif; ?>><?php echo htmlentities($choice, ENT_COMPAT, 'utf-8'); ?></option>
+        <?php endforeach; ?>
+      </select>
+      <?php endif; ?>
+    <?php endif; ?>
+
+<?php
+
+  };
+
+?>
+
+<div class="container">
+
+  <h2>
+    <?php if ($event): ?>
+      <span data-val="edit-title"><?php echo htmlentities($event->title, ENT_COMPAT, 'utf-8'); ?></span>
+    <?php else: ?>
+      Nouvel évènement
+    <?php endif; ?>
+  </h2>
+
+  <form
+    action="<?php echo CalBox::makeUrl($event ? 'edit' : 'create', ['e' => $event ? $event->id : null]); ?>"
+    method="post"
+    <?php if ($event): ?>
+      class="hidden-form"
+      data-ajax-form
+    <?php endif; ?>>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Informations générales
+        </h3>
+      </div>
+      <div class="panel-body">
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="edit-begins_at">Date de début <span class="text-danger">*</span></label>
+              <div class="input-group date" data-datetimepicker>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-begins_at"
+                  name="begins_at"
+                  placeholder="DD/MM/YYYY hh:mm"
+                  required="required"
+                  value="<?php echo $event ? $event->getFormattedBeginsAt() : ''; ?>">
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+
+              <?php if ($event): ?>
+                <div class="input-value">
+                  <span class="val"><?php echo $event->getFormattedBeginsAt() ?: '&ndash;'; ?></span>
+                </div>
+              <?php endif; ?>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="edit-ends_at">Date de fin <span class="text-danger">*</span></label>
+              <div class="input-group date" data-datetimepicker>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-ends_at"
+                  name="ends_at"
+                  placeholder="DD/MM/YYYY hh:mm"
+                  required="required"
+                  value="<?php echo $event ? $event->getFormattedEndsAt() : ''; ?>">
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+
+              <?php if ($event): ?>
+                <div class="input-value">
+                  <span class="val"><?php echo $event->getFormattedEndsAt() ?: '&ndash;'; ?></span>
+                </div>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-title">Intitulé <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            id="edit-title"
+            name="title"
+            placeholder="Renseignez ici l'intitulé de l'évènement"
+            required="required"
+            value="<?php echo htmlentities($event ? $event->title : '', ENT_COMPAT, 'utf-8'); ?>">
+
+          <?php if ($event): ?>
+            <div class="input-value">
+              <span class="val"><?php echo htmlentities($event->title, ENT_COMPAT, 'utf-8') ?: '&ndash;'; ?></span>
+            </div>
+          <?php endif; ?>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-info">Notes et informations</label>
+          <textarea
+            class="form-control"
+            id="edit-info"
+            name="info"
+            rows="5"
+            placeholder="Renseignez ici une description de l'évènement (lieu, modalités, etc.)"><?php echo htmlentities($event ? $event->info : '', ENT_COMPAT, 'utf-8'); ?></textarea>
+
+          <?php if ($event): ?>
+            <div class="input-value">
+              <span class="val"><?php echo nl2br(htmlentities($event->info, ENT_COMPAT, 'utf-8')) ?: '&ndash;'; ?></span>
+            </div>
+          <?php endif; ?>
+        </div>
+
+      </div>
+      <div class="panel-footer btns">
+        <div class="pull-right">
+          <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            Sauvegarder
+          </button>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </form>
+
+  <?php if ($event): ?>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Inscrits
+        </h3>
+      </div>
+      <div class="panel-body">
+        <?php if ($registrations = $event->getRegistrations()): ?>
+          <table class="table table-hover" data-autosize>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <?php foreach ($event->getBaseOptions() as $optName => $opt): ?>
+                  <th><?php echo $opt['label']; ?></th>
+                <?php endforeach; ?>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($registrations as $registration): ?>
+                <tr
+                  class="hidden-form"
+                  data-ajax-form
+                  data-form-action="<?php echo CalBox::makeUrl('editRegistration', ['e' => $event->id, 'r' => $registration->id]); ?>"
+                  data-form-method="post">
+                  <td>
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="name"
+                        placeholder="Nom et Prénom"
+                        required="required"
+                        value="<?php echo htmlentities($registration->name, ENT_COMPAT, 'utf-8'); ?>">
+
+                      <div class="input-value">
+                        <span class="val"><?php echo htmlentities($registration->name, ENT_COMPAT, 'utf-8') ?: '&ndash;'; ?></span>
+                      </div>
+                    </div>
+                  </td>
+
+                  <?php foreach ($event->getBaseOptions() as $optName => $opt): ?>
+                    <td>
+                      <div class="form-group">
+                        <?php $opt_html($event, $optName, $opt, $registration->getOption($optName)); ?>
+
+                        <?php if (!in_array($opt['type'], ['days'])): ?>
+                          <div class="input-value">
+                            <span class="val"><?php echo htmlentities($registration->getOption($optName), ENT_COMPAT, 'utf-8') ?: '&ndash;'; ?></span>
+                          </div>
+                        <?php endif; ?>
+                      </div>
+                    </td>
+                  <?php endforeach; ?>
+
+                  <td class="text-right">
+                    <a
+                      href="<?php echo CalBox::makeUrl('removeRegistration', ['e' => $event->id, 'r' => $registration->id]); ?>"
+                      class="btn btn-danger btn-xs cancel-registration"
+                      data-toggle="tooltip"
+                      data-placement="bottom"
+                      title="Annuler l'inscription">
+                      Suppr.
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </a>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        <?php else: ?>
+          <br>
+          <p class="lead text-center">Aucun inscrit</p>
+        <?php endif; ?>
+
+      </div>
+      <div class="panel-footer">
+        <form action="<?php echo CalBox::makeUrl('addRegistration', ['e' => $event->id]); ?>" method="post" class="form-horizontal">
+          <h4 class="text-center">
+            <a class="btn btn-success btn-lg" role="button" data-toggle="collapse" href="#subscribe" aria-expanded="false" aria-controls="subscribe">
+              <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+              S'inscrire à &laquo; <?php echo htmlentities($event->title, ENT_COMPAT, 'utf-8'); ?> &raquo;
+            </a>
+          </h4>
+
+          <div class="collapse" id="subscribe">
+            <hr>
+
+            <div class="form-group">
+              <label for="subscribe-name" class="col-sm-2 control-label">Nom complet</label>
+              <div class="col-sm-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="subscribe-name"
+                  name="name"
+                  placeholder="Prénom et Nom"
+                  required="required">
+              </div>
+            </div>
+
+            <?php foreach ($event->getBaseOptions() as $optName => $opt): ?>
+              <div class="form-group">
+                <label for="subscribe-opt-<?php echo $optName; ?>" class="col-sm-2 control-label"><?php echo $opt['label']; ?></label>
+                <div class="col-sm-10">
+                  <?php $opt_html($event, $optName, $opt, true); ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+
+            <div class="pull-right">
+              <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Ajouter l'inscription
+              </button>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  <?php endif; ?>
+
+</div>
+
+<?php include 'footer.phtml'; ?>

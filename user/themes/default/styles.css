@@ -1,0 +1,271 @@
+
+body {
+  margin: 100px 0 50px 0;
+  background: #fafafa;
+}
+
+.footer {
+  color: #ccc;
+}
+
+  .footer .label-light {
+    font-weight: normal;
+  }
+
+/******************************************************************************/
+/** CALENDAR **/
+
+.day-events {
+  position: relative;
+  margin: 28px 0 0 0;
+}
+
+.day-event {
+  position: relative;
+  margin: 0 0 1px 0;
+  height: 15px;
+  background: #d9edf7;
+  opacity: 0.8;
+}
+
+.day-event.hover {
+  opacity: 1;
+}
+
+.day-event.fixed-left {
+  border-left: none;
+}
+
+.day-event.fixed-right {
+  border-right: none;
+}
+
+  .day-event em {
+    position: absolute;
+    overflow: hidden;
+    left: 4px;
+    right: 4px;
+    top: 3px;
+    height: 10px;
+    line-height: 10px;
+    font-size: 9px;
+    font-style: normal;
+  }
+
+    .day-event em a {
+      color: inherit;
+    }
+
+@media (min-width: 600px) {
+
+  .calendar-nav {
+    overflow: hidden;
+    margin: 0 0 20px 0;
+  }
+
+    .calendar-nav ul.pager {
+      position: relative;
+      z-index: 2;
+    }
+      .calendar-nav ul.pager li a {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+    .calendar-nav .calendar-title {
+      position: relative;
+      margin: -53px 0 0 0;
+      text-align: center;
+      z-index: 1;
+    }
+
+  .calendar {
+    display: table;
+    width: 100%;
+  }
+
+    .calendar .week {
+      display: table-row;
+    }
+
+      .calendar .week .day {
+        display: table-cell;
+        width: 14.29%;
+      }
+
+        .calendar .week .day .inner {
+          position: relative;
+          margin: 5px;
+          height: 80px;
+          background: white;
+          border: 1px solid #e0e0e0;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        }
+
+          .calendar .week .day .inner strong {
+            position: absolute;
+            right: 8px;
+            top: 6px;
+            font-size: 16px;
+            font-weight: normal;
+          }
+
+            .calendar .week .day .inner strong span {
+              display: none;
+            }
+
+      .calendar .week .day.day-sunday .inner {
+        background: #f0f0f0;
+      }
+
+      .calendar .week .day.day-name {
+        padding: 5px;
+        color: #999;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      .calendar .week .day.day-not-month .inner {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(224, 224, 224, 0.3);
+      }
+
+      .calendar .week .day.day-sunday.day-not-month .inner {
+        background: rgba(240, 240, 240, 0.3);
+      }
+
+      .calendar .week .day.day-not-month .inner strong {
+        opacity: 0.3;
+      }
+
+}
+
+@media (max-width: 600px) {
+
+  .calendar .calendar-head,
+  .calendar .week .day.day-not-month {
+    display: none;
+  }
+
+  .calendar .week .day .inner {
+    position: relative;
+    margin: 5px;
+    padding: 10px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  }
+
+  .calendar .week .day .inner strong span {
+    display: inline;
+    text-transform: uppercase;
+    font-weight: normal;
+    color: #999;
+  }
+
+  .day-events {
+    margin: 10px 0 0 0;
+  }
+
+}
+
+/******************************************************************************/
+/** EDIT **/
+
+.hidden-form .input-group,
+.hidden-form .form-control,
+.hidden-form .btns {
+  display: none;
+}
+
+.hidden-form .input-value .val {
+  color: #333;
+  border-bottom: 1px dotted #999;
+  cursor: pointer;
+}
+
+.hidden-form .input-value .val:hover {
+  color: #000;
+  border-bottom-color: #000;
+}
+
+.hidden-form .edit-input .input-group {
+  display: table;
+}
+
+.hidden-form .edit-input .form-control {
+  display: block;
+}
+
+.hidden-form .edit-input .input-value {
+  display: none;
+}
+
+.hidden-form td .form-group {
+  margin: 0;
+  padding: 0;
+}
+
+.hidden-form .input-value {
+  margin: 7px 0 0 13px;
+  padding: 0 0 7px 0;
+}
+
+.hidden-form td select.form-control {
+  padding-left: 8px;
+}
+
+.modal.loading .modal-dialog {
+  margin-top: 130px;
+  width: 300px;
+}
+
+  .modal.loading .modal-body {
+    padding: 17px 25px 5px 25px;
+  }
+
+    .modal.loading .modal-body p {
+      margin: 0;
+      padding: 0 0 20px 0;
+    }
+
+.days-selector {
+  position: relative;
+  overflow: hidden;
+}
+
+  .days-selector div {
+    position: relative;
+    float: left;
+    overflow: hidden;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+    .days-selector div span {
+      display: block;
+      position: relative;
+      float: left;
+      margin: 0 1px 0 0;
+      padding: 1px 3px 0 3px;
+      background: #777;
+      border-radius: 2px;
+      color: white;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .days-selector div span.on { background: #5cb85c; }
+    .days-selector div span.off { background: #d9534f; }
+
+.hidden-form .days-selector div {
+  background: none;
+  border: none;
+}
+
+.cancel-registration {
+  margin: 6px 0 0 0;
+}

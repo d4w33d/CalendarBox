@@ -1,0 +1,59 @@
+<?php use CalBox\Lib\Lang; ?>
+<!DOCTYPE html>
+<html lang="fr-FR">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title><?php echo CalBox::cfg('app.name'); ?></title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.14.30/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="<?php echo $__THEME_URL; ?>/styles.css">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainNav" aria-expanded="false">
+            <span class="sr-only">Navigation ON/OFF</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <a class="navbar-brand" href="<?php echo CalBox::makeUrl('index',
+            [
+              'after' => $this->p('after'),
+              't' => $this->p('t'),
+            ]); ?>">
+            <?php echo CalBox::cfg('app.name'); ?>
+            <?php if ($baseline = CalBox::cfg('app.baseline')): ?>
+              <small>&nbsp;&ndash;&nbsp; <?php echo $baseline; ?></small>
+            <?php endif; ?>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="nav navbar-nav">
+            <li<?php if ($__VIEW === 'calendar'): ?> class="active"<?php endif; ?>>
+              <a href="<?php echo CalBox::makeUrl('index'); ?>">
+                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                Calendrier
+              </a>
+            </li>
+            <li<?php if ($__VIEW === 'create'): ?> class="active"<?php endif; ?>>
+              <a href="<?php echo CalBox::makeUrl('create'); ?>">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                Ajouter un évènement
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>

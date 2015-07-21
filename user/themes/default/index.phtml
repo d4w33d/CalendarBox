@@ -1,0 +1,106 @@
+<?php include 'header.phtml'; ?>
+
+<div class="container">
+
+  <nav class="calendar-nav">
+    <ul class="pager">
+      <?php foreach ($nav as $navType => $navItem): ?>
+        <li class="<?php echo $navType === 'next' ? 'next' : 'previous'; ?>">
+          <a href="<?php echo $navItem->link; ?>">
+            <?php if ($navType === 'prev'): ?>
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <?php endif; ?>
+
+            <?php echo $this->getMonthName(date('n', $navItem->s)); ?>
+
+            <?php if ($navType === 'next'): ?>
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <?php endif; ?>
+          </a>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+
+    <h2 class="calendar-title">
+      <?php echo $this->getMonthName(date('n', $ts)); ?>
+      <?php echo date('Y', $ts); ?>
+    </h2>
+  </nav>
+
+  <div class="calendar">
+    <div class="week calendar-head">
+      <?php for ($i = 1; $i <= 7; $i++): ?>
+        <div class="day day-name"><?php echo $this->getDayName($i); ?></div>
+      <?php endfor; ?>
+    </div>
+    <div class="week">
+      <?php foreach ($days as $i => $day): ?>
+        <?php if ($i % 7 === 0): ?>
+          </div>
+          <div class="week">
+        <?php endif; ?>
+
+        <?php
+
+          $class = [];
+          if (!$day->is_current_month) $class[] = 'day-not-month';
+          if ($day->day === 6) $class[] = 'day-saturday';
+          else if ($day->day === 7) $class[] = 'day-sunday';
+
+        ?>
+
+        <div class="day <?php echo implode(' ', $class); ?>">
+          <div class="inner">
+            <strong>
+              <span><?php echo $this->getDayName($day->day); ?></span>
+              <?php echo $day->n; ?>
+            </strong>
+
+            <?php if ($day->events): ?>
+              <div class="day-events">
+                <?php foreach ($day->events as $event): ?>
+                  <?php
+
+                    $classes = [];
+                    if ($event->left === 0) $classes[] = ' fixed-left';
+                    if ($event->right === 0) $classes[] = ' fixed-right';
+
+                    $pop = '<strong>Début :</strong> ' . ($event->evt->getFormattedBeginsAt() ?: '&ndash;') . '<br>'
+                         . '<strong>Fin :</strong> ' . ($event->evt->getFormattedEndsAt() ?: '&ndash;') . '<br>'
+                         . '<strong>Inscrits :</strong> ' . (count($event->evt->getRegistrations()) ?: '(aucun)') . '<br>';
+
+                    $css = [];
+                    $css[] = 'left: ' . round($event->left * 100) . '%;';
+                    $css[] = 'width: ' . round($event->width * 100) . '%;';
+                    $css[] = 'background: #' . $event->bg . ';';
+                    $css[] = 'color: rgba(' . ($event->fg === 'dark' ? '0, 0, 0, 0.7' : '255, 255, 255, 0.7') . ');';
+
+                  ?>
+
+                  <div
+                    class="day-event <?php echo implode(' ', $classes); ?>"
+                    style="<?php echo implode(' ', $css); ?>"
+                    data-toggle="popover"
+                    data-placement="bottom"
+                    data-trigger="hover"
+                    title="<?php echo htmlentities($event->evt->title, ENT_COMPAT, 'utf-8'); ?>"
+                    data-content="<?php echo htmlentities($pop, ENT_COMPAT, 'utf-8'); ?>"
+                    data-day-event="<?php echo $event->evt->id; ?>">
+                    <em>
+                      <a href="<?php echo CalBox::makeUrl('edit', ['e' => $event->evt->id]); ?>">
+                        <?php echo htmlentities($event->evt->title, ENT_COMPAT, 'utf-8'); ?>
+                      </a>
+                    </em>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+
+</div>
+
+<?php include 'footer.phtml'; ?>
